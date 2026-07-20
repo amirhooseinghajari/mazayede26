@@ -1,0 +1,85 @@
+<% pageTitle = 'لات‌های حراج' %>
+<%- include('partials/header') %>
+
+<section class="hero">
+  <div class="hero-stamp">حراج<br>رسمی</div>
+  <h1>هر کالا، یک <span>لات</span>. هر پیشنهاد، یک فرصت.</h1>
+  <p>کالای خود را برای مزایده ثبت کنید یا روی لات‌های در حال حراج پیشنهاد قیمت بدهید. بالاترین پیشنهاد در پایان مهلت، برنده‌ی لات خواهد بود.</p>
+  <% if (!currentUser) { %>
+    <a href="/register" class="btn btn-brass">همین حالا ثبت‌نام کن</a>
+  <% } else { %>
+    <a href="/items/new" class="btn btn-brass">ثبت لات جدید</a>
+  <% } %>
+</section>
+
+<div class="section-title">
+  <h2>در حال حراج <span class="count">(<%= open.length %>)</span></h2>
+  <div class="rule"></div>
+</div>
+
+<% if (open.length === 0) { %>
+  <div class="empty-state">هنوز هیچ لاتی در حال حراج نیست. اولین نفری باشید که کالایی ثبت می‌کند.</div>
+<% } else { %>
+  <div class="lot-grid">
+    <% open.forEach(item => { %>
+      <div class="lot-ticket">
+        <a class="cover-link" href="/items/<%= item.id %>"></a>
+        <div class="lot-number">لات #<%= String(item.id).padStart(3, '0') %></div>
+        <% if (item.image_url) { %>
+          <img class="lot-image" src="<%= item.image_url %>" alt="<%= item.title %>">
+        <% } else { %>
+          <div class="lot-image placeholder">بدون تصویر</div>
+        <% } %>
+        <div class="lot-body">
+          <h3><%= item.title %></h3>
+          <p class="desc"><%= item.description %></p>
+          <div class="perforation"></div>
+          <div class="lot-stub">
+            <div class="lot-price-badge">
+              <span class="label">قیمت فعلی</span>
+              <span class="amount"><%= item.currentPrice.toLocaleString('fa-IR') %> تومان</span>
+            </div>
+            <span class="lot-status open" data-countdown="<%= item.endsAtISO %>">فعال</span>
+          </div>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+<% } %>
+
+<div class="section-title">
+  <h2>پایان‌یافته <span class="count">(<%= closed.length %>)</span></h2>
+  <div class="rule"></div>
+</div>
+
+<% if (closed.length === 0) { %>
+  <div class="empty-state">هنوز هیچ مزایده‌ای به پایان نرسیده است.</div>
+<% } else { %>
+  <div class="lot-grid">
+    <% closed.forEach(item => { %>
+      <div class="lot-ticket">
+        <a class="cover-link" href="/items/<%= item.id %>"></a>
+        <div class="lot-number">لات #<%= String(item.id).padStart(3, '0') %></div>
+        <% if (item.image_url) { %>
+          <img class="lot-image" src="<%= item.image_url %>" alt="<%= item.title %>">
+        <% } else { %>
+          <div class="lot-image placeholder">بدون تصویر</div>
+        <% } %>
+        <div class="lot-body">
+          <h3><%= item.title %></h3>
+          <p class="desc"><%= item.description %></p>
+          <div class="perforation"></div>
+          <div class="lot-stub">
+            <div class="lot-price-badge">
+              <span class="label"><%= item.topBidderName ? 'قیمت نهایی' : 'بدون پیشنهاد' %></span>
+              <span class="amount"><%= item.currentPrice.toLocaleString('fa-IR') %> تومان</span>
+            </div>
+            <span class="lot-status closed">پایان‌یافته</span>
+          </div>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+<% } %>
+
+<%- include('partials/footer') %>
