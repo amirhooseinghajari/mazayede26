@@ -1,0 +1,50 @@
+<% pageTitle = 'پیشخوان من' %>
+<%- include('partials/header') %>
+
+<div class="section-title" style="margin-top:36px">
+  <h2>لات‌های ثبت‌شده توسط من</h2>
+  <div class="rule"></div>
+</div>
+
+<% if (myItems.length === 0) { %>
+  <div class="empty-state">هنوز کالایی برای مزایده ثبت نکرده‌اید. <a href="/items/new" style="color:var(--brass-bright)">همین حالا ثبت کنید</a></div>
+<% } else { %>
+  <table class="dash-table">
+    <thead><tr><th>لات</th><th>وضعیت</th><th>قیمت فعلی</th><th>پیشنهادها</th></tr></thead>
+    <tbody>
+      <% myItems.forEach(i => { %>
+        <tr>
+          <td><a href="/items/<%= i.id %>" style="color:var(--brass-bright)"><%= i.title %></a></td>
+          <td><%= i.isOpen ? 'فعال' : 'پایان‌یافته' %></td>
+          <td><%= i.currentPrice.toLocaleString('fa-IR') %> تومان</td>
+          <td><%= i.bidCount %></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+<% } %>
+
+<div class="section-title">
+  <h2>مزایده‌هایی که در آن‌ها پیشنهاد داده‌ام</h2>
+  <div class="rule"></div>
+</div>
+
+<% if (myBids.length === 0) { %>
+  <div class="empty-state">هنوز روی هیچ لاتی پیشنهاد ثبت نکرده‌اید.</div>
+<% } else { %>
+  <table class="dash-table">
+    <thead><tr><th>لات</th><th>وضعیت</th><th>بالاترین پیشنهاد</th><th>وضعیت من</th></tr></thead>
+    <tbody>
+      <% myBids.forEach(i => { %>
+        <tr>
+          <td><a href="/items/<%= i.id %>" style="color:var(--brass-bright)"><%= i.title %></a></td>
+          <td><%= i.isOpen ? 'فعال' : 'پایان‌یافته' %></td>
+          <td><%= i.currentPrice.toLocaleString('fa-IR') %> تومان</td>
+          <td><%= i.topBidderName === currentUser.name ? '🟢 پیشتاز' : '🔴 پشت سر گذاشته شده' %></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+<% } %>
+
+<%- include('partials/footer') %>
