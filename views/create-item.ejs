@@ -1,0 +1,38 @@
+<% pageTitle = 'ثبت لات جدید' %>
+<%- include('partials/header') %>
+
+<div class="form-panel wide">
+  <h2>ثبت کالا برای مزایده</h2>
+  <% if (error) { %><div class="form-error"><%= error %></div><% } %>
+  <form method="POST" action="/items/new">
+    <div class="field">
+      <label>عنوان کالا</label>
+      <input type="text" name="title" required value="<%= values.title || '' %>" placeholder="مثلاً: ساعت مچی دستی وینتیج">
+    </div>
+    <div class="field">
+      <label>توضیحات</label>
+      <textarea name="description" required placeholder="وضعیت کالا، ابعاد، هر نکته‌ای که خریدار باید بداند..."><%= values.description || '' %></textarea>
+    </div>
+    <div class="field">
+      <label>آدرس تصویر (اختیاری)</label>
+      <input type="url" name="image_url" value="<%= values.image_url || '' %>" placeholder="https://...">
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>قیمت پایه (تومان)</label>
+        <input type="number" name="starting_price" min="1" required value="<%= values.starting_price || '' %>">
+      </div>
+      <div class="field">
+        <label>حداقل افزایش هر پیشنهاد (تومان)</label>
+        <input type="number" name="min_increment" min="1" value="<%= values.min_increment || 5000 %>">
+      </div>
+    </div>
+    <div class="field">
+      <label>مدت زمان مزایده (ساعت)</label>
+      <input type="number" name="duration_hours" min="0.5" step="0.5" required value="<%= values.duration_hours || 24 %>">
+    </div>
+    <button type="submit" class="btn btn-brass" style="width:100%">ثبت و شروع مزایده</button>
+  </form>
+</div>
+
+<%- include('partials/footer') %>
