@@ -1,0 +1,66 @@
+<% pageTitle = item.title %>
+<%- include('partials/header') %>
+
+<div class="item-detail">
+  <div class="item-media">
+    <% if (item.image_url) { %>
+      <img src="<%= item.image_url %>" alt="<%= item.title %>">
+    <% } else { %>
+      <div class="placeholder-media">بدون تصویر</div>
+    <% } %>
+  </div>
+
+  <div class="item-info">
+    <h1>لات #<%= String(item.id).padStart(3, '0') %> — <%= item.title %></h1>
+    <div class="seller-line">فروشنده: <%= sellerName %> · تعداد پیشنهادها: <%= item.bidCount %></div>
+    <div class="desc-block"><%= item.description %></div>
+
+    <div class="price-panel">
+      <div class="current-label"><%= item.topBidderName ? 'بالاترین پیشنهاد فعلی' : 'قیمت پایه' %></div>
+      <div class="current-amount"><%= item.currentPrice.toLocaleString('fa-IR') %> تومان</div>
+      <% if (item.topBidderName) { %>
+        <div class="top-bidder">پیشنهاددهنده: <%= item.topBidderName %></div>
+      <% } %>
+      <div class="countdown <%= item.isOpen ? '' : 'ended' %>" data-countdown-text="<%= item.endsAtISO %>">
+        <%= item.isOpen ? 'در حال شمارش...' : 'مزایده پایان یافته است' %>
+      </div>
+    </div>
+
+    <% if (error) { %><div class="form-error"><%= error %></div><% } %>
+
+    <% if (!item.isOpen) { %>
+      <div class="empty-state">
+        <% if (item.topBidderName) { %>
+          این مزایده پایان یافته و <strong><%= item.topBidderName %></strong> با پیشنهاد <%= item.currentPrice.toLocaleString('fa-IR') %> تومان برنده شد.
+        <% } else { %>
+          این مزایده بدون هیچ پیشنهادی پایان یافت.
+        <% } %>
+      </div>
+    <% } else if (!currentUser) { %>
+      <a href="/login" class="btn btn-brass">برای ثبت پیشنهاد وارد شوید</a>
+    <% } else if (currentUser.id === item.seller_id) { %>
+      <div class="empty-state">شما فروشنده‌ی این کالا هستید و نمی‌توانید پیشنهاد ثبت کنید.</div>
+    <% } else { %>
+      <form class="bid-form" method="POST" action="/items/<%= item.id %>/bid">
+        <input type="number" name="amount" min="<%= item.minNextBid %>" placeholder="حداقل <%= item.minNextBid.toLocaleString('fa-IR') %> تومان" required>
+        <button type="submit" class="btn btn-brass">ثبت پیشنهاد</button>
+      </form>
+    <% } %>
+
+    <div class="bid-history">
+      <h3>تاریخچه‌ی پیشنهادها</h3>
+      <% if (bids.length === 0) { %>
+        <p style="opacity:.6;font-size:.88rem">هنوز پیشنهادی ثبت نشده است.</p>
+      <% } else { %>
+        <% bids.forEach(b => { %>
+          <div class="bid-row">
+            <span><%= b.bidder_name %></span>
+            <span class="amount"><%= b.amount.toLocaleString('fa-IR') %> تومان</span>
+          </div>
+        <% }) %>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>
